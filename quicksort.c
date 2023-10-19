@@ -18,6 +18,8 @@ void quicksort(int list[], int left, int right) {
     if (right - left <= 0)
         return;
     int pivot = partition(list, left, right);
+    if (pivot == right)
+        return; // this makes best case O(N)
     quicksort(list, left, pivot - 1);
     quicksort(list, pivot + 1, right);
 }
