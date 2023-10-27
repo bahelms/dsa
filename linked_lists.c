@@ -1,15 +1,12 @@
+#include "linked_lists.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Node {
-    int value;
-    struct Node *next;
-} Node;
-
-Node *init(int value) {
+Node *init_node(int value) {
     Node *node = malloc(sizeof(Node));
     node->value = value;
     node->next = NULL;
+    node->prev = NULL;
     return node;
 }
 
@@ -27,14 +24,14 @@ Node *access(Node *node, int index) {
 }
 
 Node *insert_after(int value, Node *node) {
-    Node *new_node = init(value);
+    Node *new_node = init_node(value);
     node->next = new_node;
     return new_node;
 }
 
 Node *insert_at(Node *node, int value, int index) {
     if (index == 0) {
-        Node *new_node = init(value);
+        Node *new_node = init_node(value);
         new_node->next = node;
         return new_node;
     }
@@ -105,25 +102,29 @@ void print_list(Node *node) {
     puts("]");
 }
 
-int main(int argc, char *argv[]) {
-    Node *head = init(1);
-    insert_after(2, head);
-    insert_after(3, head->next);
-    insert_after(4, head->next->next);
+void insert_at_end(DoublyLinkedList *list, int value) {
+    Node *node = init_node(value);
+    if (list->first == NULL) {
+        list->first = node;
+        list->last = node;
+    } else {
+        node->prev = list->last;
+        list->last->next = node;
+        list->last = node;
+    }
+}
 
-    printf("Value at index 3: %d\n", read(head, 3));
-    printf("Index of 3: %d\n", index_of(head, 3));
+int remove_from_front(DoublyLinkedList *list) {
+    Node *node = list->first;
+    if (node == NULL) {
+        return -1;
+    }
 
-    print_list(head);
-    head = insert_at(head, 5, 2);
-    print_list(head);
-    head = insert_at(head, 6, 0);
-    print_list(head);
-
-    head = delete_at(head, 0);
-    print_list(head);
-    head = delete_at(head, 2);
-    print_list(head);
-
-    return 0;
+    list->first = node->next;
+    if (list->first != NULL) {
+        list->first->prev = NULL;
+    }
+    int value = node->value;
+    free(node);
+    return value;
 }
