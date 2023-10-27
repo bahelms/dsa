@@ -28,7 +28,8 @@ Node *init_node(int value) {
     return node;
 }
 
-void insert_at_end(DoublyLinkedList *list, Node *node) {
+void insert_at_end(DoublyLinkedList *list, int value) {
+    Node *node = init_node(value);
     if (list->first == NULL) {
         list->first = node;
         list->last = node;
@@ -39,6 +40,21 @@ void insert_at_end(DoublyLinkedList *list, Node *node) {
     }
 }
 
+int remove_from_front(DoublyLinkedList *list) {
+    Node *node = list->first;
+    if (node == NULL) {
+        return -1;
+    }
+
+    list->first = node->next;
+    if (list->first != NULL) {
+        list->first->prev = NULL;
+    }
+    int value = node->value;
+    free(node);
+    return value;
+}
+
 Queue *new_queue(void) {
     Queue *queue = malloc(sizeof(Queue));
     queue->list.first = NULL;
@@ -46,25 +62,9 @@ Queue *new_queue(void) {
     return queue;
 }
 
-void enqueue(Queue *queue, int value) {
-    Node *node = init_node(value);
-    insert_at_end(&queue->list, node);
-}
+void enqueue(Queue *queue, int value) { insert_at_end(&queue->list, value); }
 
-int dequeue(Queue *queue) {
-    Node *node = queue->list.first;
-    if (node == NULL) {
-        return -1;
-    }
-
-    queue->list.first = node->next;
-    if (queue->list.first != NULL) {
-        queue->list.first->prev = NULL;
-    }
-    int value = node->value;
-    free(node);
-    return value;
-}
+int dequeue(Queue *queue) { return remove_from_front(&queue->list); }
 
 int main(int argc, char *argv[]) {
     Queue *queue = new_queue();
