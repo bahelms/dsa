@@ -93,6 +93,19 @@ int index_of(Node *node, int value) {
     return index;
 }
 
+// Reverse a linked list
+Node *reverse(Node *node) {
+    Node *next, *prev = NULL;
+
+    while (node != NULL) {
+        next = node->next;
+        node->next = prev;
+        prev = node;
+        node = next;
+    }
+    return prev;
+}
+
 void print_list(Node *node) {
     printf("[");
     do {

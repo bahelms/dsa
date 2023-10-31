@@ -1,3 +1,4 @@
+#include "linked_lists.h"
 #include "sorting.h"
 #include <stdio.h>
 
@@ -9,6 +10,14 @@ int main(int argc, char *argv[]) {
     printf("13.1 - %d\n", ch13_1());
     printf("13.2 - %d\n", ch13_2());
     ch13_3();
+
+    // ch14.4
+    Node *head = init_node(1);
+    insert_after(2, head);
+    insert_after(3, head->next);
+    insert_after(4, head->next->next);
+    head = reverse(head);
+    print_list(head);
 
     return 0;
 }

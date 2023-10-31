@@ -4,6 +4,11 @@ typedef struct Node {
     struct Node *prev;
 } Node;
 
+Node *init_node(int);
+Node *insert_after(int, Node *);
+Node *reverse(Node *);
+void print_list(Node *);
+
 typedef struct DoublyLinkedList {
     struct Node *first;
     struct Node *last;
