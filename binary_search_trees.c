@@ -94,6 +94,23 @@ void find_value(Node *node, int value) {
         printf("Node exists: %d\n", node->value);
 }
 
+// inorder
+void traverse(Node *node) {
+    if (node == NULL)
+        return;
+
+    traverse(node->left);
+    printf("%d\n", node->value);
+    traverse(node->right);
+}
+
+Node *greatest(Node *node) {
+    if (node->right != NULL) {
+        return greatest(node->right);
+    }
+    return node;
+}
+
 int main(int argc, char *argv[]) {
     /*
      *       50
@@ -136,6 +153,9 @@ int main(int argc, char *argv[]) {
 
     delete_value(root, 100);
     delete_value(root, 50);
+
+    traverse(root);
+    printf("Greatest value: %d\n", greatest(root)->value);
 
     return 0;
 }
