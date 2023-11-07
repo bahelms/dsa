@@ -49,45 +49,39 @@ Node *move_successor_node(Node *node, Node *parent) {
     return move_successor_node(node->left, node);
 }
 
-Node *delete_node(Node *node) {
-    Node *left = node->left, *right = node->right, *successor = NULL;
-
-    if (node->left == NULL && node->right == NULL) {
-        free(node);
-    } else if (node->left == NULL) {
-        Node *new_child = node->right;
-        free(node);
-        successor = new_child;
-    } else if (node->right == NULL) {
-        Node *new_child = node->left;
-        free(node);
-        successor = new_child;
+Node *successor(Node *node, Node *node_to_delete) {
+    if (node->left != NULL) {
+        node->left = successor(node->left, node_to_delete);
+        return node;
     } else {
-        successor = move_successor_node(node->right, node);
+        node_to_delete->value = node->value;
+        Node *node_to_lift = node->right;
         free(node);
+        return node_to_lift;
     }
-    if (successor != NULL) {
-        successor->left = left;
-        successor->right = right;
-    }
-    return successor;
 }
 
-void delete_value(Node *node, int value) {
+Node *delete_value(Node *node, int value) {
     if (node == NULL) {
-        return;
-    }
-    // handle not finding value
-    // handle value being root
-    if (node->left != NULL && node->left->value == value) {
-        node->left = delete_node(node->left);
-    } else if (node->right != NULL && node->right->value == value) {
-        node->right = delete_node(node->right);
+        return NULL;
+    } else if (value < node->value) {
+        node->left = delete_value(node->left, value);
+        return node;
+    } else if (value > node->value) {
+        node->right = delete_value(node->right, value);
+        return node;
     } else {
-        if (node->value < value) {
-            delete_value(node->right, value);
+        if (node->left == NULL) {
+            Node *node_to_lift = node->right;
+            free(node);
+            return node_to_lift;
+        } else if (node->right == NULL) {
+            Node *node_to_lift = node->left;
+            free(node);
+            return node_to_lift;
         } else {
-            delete_value(node->left, value);
+            node->right = successor(node->right, node);
+            return node;
         }
     }
 }
@@ -130,18 +124,18 @@ int main(int argc, char *argv[]) {
     find_value(root, 20);
 
     find_value(root, 80);
-    /* delete_value(root, 80); */
+    delete_value(root, 80);
     find_value(root, 80);
     find_value(root, 85);
 
     find_value(root, 75);
-    /* delete_value(root, 75); */
+    delete_value(root, 75);
     find_value(root, 75);
     find_value(root, 70);
     find_value(root, 85);
 
     delete_value(root, 100);
-    /* delete_value(root, 50); */
+    delete_value(root, 50);
 
     return 0;
 }
