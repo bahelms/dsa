@@ -56,16 +56,16 @@ void append(struct Words *words, char *word) {
 
 // depth first
 void _collectAllWords(const TrieNode *trie, char *word, struct Words *words) {
-    for (int i = 0; i < HASH_TABLE_SIZE - 1; i++) {
+    for (int i = 0; i < HASH_TABLE_SIZE; i++) {
         TrieNode *child = trie->table[i];
         if (child != NULL) {
-            char chr = unhashCharacter(i);
-            char *newWord = malloc(words->wordSize);
-            strncpy(newWord, word, words->wordSize);
-            strncat(newWord, &chr, 1);
-            if (child->table[26] != NULL) {
-                append(words, newWord);
+            if (i == 26) {
+                append(words, word);
             } else {
+                char chr = unhashCharacter(i);
+                char *newWord = malloc(words->wordSize);
+                strncpy(newWord, word, words->wordSize);
+                strncat(newWord, &chr, 1);
                 _collectAllWords(child, newWord, words);
             }
         }
