@@ -61,13 +61,14 @@ void _collectAllWords(const TrieNode *trie, char *word, struct Words *words) {
         if (child != NULL) {
             if (i == 26) {
                 append(words, word);
-            } else {
-                char chr = unhashCharacter(i);
-                char *newWord = malloc(words->wordSize);
-                strncpy(newWord, word, words->wordSize);
-                strncat(newWord, &chr, 1);
-                _collectAllWords(child, newWord, words);
+                continue;
             }
+
+            char chr = unhashCharacter(i);
+            char *newWord = malloc(words->wordSize);
+            strncpy(newWord, word, words->wordSize);
+            strncat(newWord, &chr, 1);
+            _collectAllWords(child, newWord, words);
         }
     }
 }
@@ -86,6 +87,13 @@ char **collectAllWords(const TrieNode *trie) {
     return words.words;
 }
 
+char **autocomplete(TrieNode *trie, char *prefix) {
+    TrieNode *node = search(trie, prefix);
+    if (node == NULL)
+        return NULL;
+    return collectAllWords(node);
+}
+
 int main(int argc, char *argv[]) {
     const int length = 6;
     const char words[][10] = {"batter", "ace", "ball", "act", "bat", "can"};
@@ -98,10 +106,17 @@ int main(int argc, char *argv[]) {
     printf("Has 'battery'? %d\n", search(trie, "battery") == NULL ? 0 : 1);
     printf("Has 'ace'? %d\n", search(trie, "ace") == NULL ? 0 : 1);
 
-    puts("All words:");
+    puts("\nAll words:");
     char **allWords = collectAllWords(trie);
     for (int i = 0; i < 20; i++)
-        printf("%s\n", allWords[i]);
+        if (allWords[i][0] != '\0')
+            printf("%s\n", allWords[i]);
+
+    puts("\nAutocomplete for 'ba'");
+    char **completedWords = autocomplete(trie, "ba");
+    for (int i = 0; i < 20; i++)
+        if (completedWords[i][0] != '\0')
+            printf("ba%s\n", completedWords[i]);
 
     return 0;
 }
