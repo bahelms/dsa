@@ -24,13 +24,13 @@ void addNeighbor(Vertex *v, Vertex *neighbor) {
     v->neighbors[v->neighborCount++] = neighbor;
 }
 
-// this creates easy collisions - candy and irena are both 42
+// causes easy conflicts
 int hashString(char *str) {
     int hash = 0;
     int idx = 0;
     char chr = str[idx];
     while (chr != '\0') {
-        hash += chr - 97;
+        hash += (chr - 97) % MAX_NEIGHBORS;
         chr = str[++idx];
     }
     return hash;
@@ -81,102 +81,6 @@ Node *init_node(Vertex *value) {
     node->next = NULL;
     node->prev = NULL;
     return node;
-}
-
-Node *access(Node *node, int index) {
-    Node *current_node = node;
-    int current_idx = 0;
-    while (current_idx < index) {
-        current_node = current_node->next;
-        current_idx++;
-        if (current_node == NULL) {
-            break;
-        }
-    }
-    return current_node;
-}
-
-Node *insert_after(Vertex *value, Node *node) {
-    Node *new_node = init_node(value);
-    node->next = new_node;
-    return new_node;
-}
-
-Node *insert_at(Node *node, Vertex *value, int index) {
-    if (index == 0) {
-        Node *new_node = init_node(value);
-        new_node->next = node;
-        return new_node;
-    }
-
-    Node *current_node = access(node, index - 1);
-    if (current_node == NULL) {
-        printf("Index %d is out of bounds\n", index);
-        exit(0);
-    }
-    Node *tail = current_node->next;
-    Node *new_node = insert_after(value, current_node);
-    new_node->next = tail;
-    return node;
-}
-
-Node *delete_at(Node *node, int index) {
-    if (index == 0) {
-        Node *head = node->next;
-        free(node);
-        return head;
-    }
-
-    Node *current_node = access(node, index - 1);
-    if (current_node == NULL) {
-        printf("Index %d is out of bounds\n", index);
-        exit(0);
-    }
-
-    Node *node_to_delete = current_node->next;
-    if (node_to_delete == NULL) {
-        printf("Index %d is out of bounds\n", index);
-        exit(0);
-    }
-
-    Node *tail = node_to_delete->next;
-    current_node->next = tail;
-    free(node_to_delete);
-    return node;
-}
-
-Vertex *read(Node *node, int index) {
-    Node *current_node = access(node, index);
-    if (current_node == NULL) {
-        printf("Index %d is out of bounds\n", index);
-        exit(0);
-    }
-    return current_node->value;
-}
-
-int index_of(Node *node, Vertex *value) {
-    int index = 0;
-    while (node->value != value) {
-        node = node->next;
-        index++;
-        if (node == NULL) {
-            return -1;
-        }
-    }
-    return index;
-}
-
-// Reverse a linked list
-Node *reverse(Node *node) {
-    Node *next, *prev = NULL;
-
-    while (node != NULL) {
-        next = node->next;
-        node->next = prev;
-        prev = node;
-        node = next;
-    }
-    return prev;
 }
 
 void insertAtEnd(DoublyLinkedList *list, Vertex *value) {
@@ -255,7 +159,7 @@ int main(int argc, char *argv[]) {
     Vertex *fred = newVertex("fred");
     Vertex *helen = newVertex("helen");
     Vertex *gina = newVertex("gina");
-    Vertex *irena = newVertex("irene");
+    Vertex *irena = newVertex("irena");
     addNeighbor(alice, bob);
     addNeighbor(alice, candy);
     addNeighbor(alice, derek);
