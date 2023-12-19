@@ -40,15 +40,6 @@ void insert(Node *node, int value) {
     }
 }
 
-Node *move_successor_node(Node *node, Node *parent) {
-    if (node->left == NULL) {
-        if (node->right != NULL)
-            parent->left = node->right;
-        return node;
-    }
-    return move_successor_node(node->left, node);
-}
-
 Node *successor(Node *node, Node *node_to_delete) {
     if (node->left != NULL) {
         node->left = successor(node->left, node_to_delete);
